@@ -78,6 +78,7 @@ pbp_all <- pbp_players %>%
   ))) 
 
 #Output csv
-my_path = #Add your desired file path with name and .csv as a string
+#For example 'C:/Users/Name/Documents/play_by_play_2019.csv'
+my_path = #Add your desired file path
 
 write.csv(pbp_all,file=my_path,row.names=FALSE)
