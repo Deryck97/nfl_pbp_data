@@ -18,3 +18,5 @@ Cleaning process includes:
 -Update team abbreviations for uniformity over multiple years, changes JAC to JAX, STL to LA, and SD to LAC.
 
 Credit to [@LeeSharpeNFL](https://twitter.com/LeeSharpeNFL) and [@benbbaldwin](https://twitter.com/benbbaldwin) who's code I used in part of this script for getting new data and cleaning it. 
+
+Check out my guide for using nflscrapR in Python [here](https://gist.github.com/Deryck97/fa4abc0e66b77922634be9f51f9a1052).
