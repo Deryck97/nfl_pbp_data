@@ -13,3 +13,6 @@ for i in YEARS:
 
     #sort=True eliminates a warning and alphabetically sorts columns
     data = data.append(i_data, sort=True)
+
+#Give each row a unique index
+data.reset_index(drop=True, inplace=True)
