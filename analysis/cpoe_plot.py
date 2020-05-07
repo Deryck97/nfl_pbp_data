@@ -10,10 +10,7 @@ pd.set_option('display.max_columns', 300)
 pd.options.mode.chained_assignment = None
 
 #Read in data
-data = pd.DataFrame('regular_season_2019', engine='python')
-
-#Fix naming issue on some passes
-data.passer_player_name.loc[data.passer_player_name=='G.Minshew II'] = 'G.Minshew'
+data = pd.DataFrame('regular_season_2019.csv', engine='python')
 
 #Dictionary of team colors
 COLORS = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338D','CAR':'#0085CA','CHI':'#00143F',
@@ -39,7 +36,7 @@ teams = pd.Series(COLORS).to_frame(name='color')
 teams['logo'] = logo_paths
 
 #Get list of players and count pass attempts
-qbs = data.groupby('passer_player_name')[['play_id']].count()
+qbs = data.groupby('passer')[['play_id']].count()
 
 #Sort in order of most pass attempts
 qbs.sort_values('play_id', ascending=False, inplace=True)
@@ -49,10 +46,10 @@ qbs = qbs[:30].sort_index()
 
 #Get CPOE data for each QB, grouped by air yards
 #Filter between -10 and 40 air yards
-cpoe_data = data.loc[(data.passer_player_name.isin(qbs.index)) &
+cpoe_data = data.loc[(data.passer.isin(qbs.index)) &
                 (data.air_yards>=-10) & 
                 (data.air_yards<=40)].groupby(
-    ['passer_player_name','posteam','air_yards']).agg(
+    ['passer','posteam','air_yards']).agg(
     {'cpoe':'mean', 'play_id':'count'}).reset_index()
 
 #Drop null values
@@ -70,12 +67,12 @@ axs = axs.ravel()
 
 for i in range(len(qbs)):
     current_qb = qbs.index[i]
-    current_team = cpoe_data.posteam.loc[cpoe_data.passer_player_name==current_qb].values[0]
+    current_team = cpoe_data.posteam.loc[cpoe_data.passer==current_qb].values[0]
     current_color = teams.color.loc[current_team]
     
     #Add QB CPOE with lowess smooth
-    sns.regplot(cpoe_data.air_yards.loc[cpoe_data.passer_player_name==current_qb],
-                cpoe_data.cpoe.loc[cpoe_data.passer_player_name==current_qb],
+    sns.regplot(cpoe_data.air_yards.loc[cpoe_data.passer==current_qb],
+                cpoe_data.cpoe.loc[cpoe_data.passer==current_qb],
                 color=current_color, lowess=True, scatter_kws={'alpha':.6}, ax=axs[i])
     
     #Add average line
