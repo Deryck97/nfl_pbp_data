@@ -1,18 +1,34 @@
 import pandas as pd 
 
+pd.options.mode.chained_assignment = None
+
 #Enter desired years of data
-YEARS = [2019,2018,2017]
+YEARS = [1999, 2000, 2001, 2002, 2003,
+         2004, 2005, 2006, 2007, 2008,
+         2009, 2010, 2011, 2012, 2013,
+         2014, 2015, 2016, 2017, 2018,
+         2019]
 
-data = pd.DataFrame()
+for i in YEARS: 
+    #Link to data repo 
+    link = 'https://github.com/guga31bb/nflfastR-data/blob/master/data/play_by_play_' + str(i) + '.csv.gz?raw=true'
+    
+    #Read in CSV
+    data = pd.read_csv(link, compression='gzip', low_memory=False)
 
-for i in YEARS:  
-    #low_memory=False eliminates a warning
-    i_data = pd.read_csv('https://github.com/guga31bb/nflfastR-data/blob/master/data/' \
-                         'play_by_play_' + str(i) + '.csv.gz?raw=True',
-                         compression='gzip', low_memory=False)
-
-    #sort=True eliminates a warning and alphabetically sorts columns
-    data = data.append(i_data, sort=True)
-
-#Give each row a unique index
-data.reset_index(drop=True, inplace=True)
+    #Filter to regular season data only
+    data = data.loc[data.season_type=='REG']
+    
+    #Filter to remove kickoffs, punts, field goals, kneels, etc.
+    data = data.loc[(data.play_type.isin(['no_play','pass','run'])) & 
+                (data.epa.isna()==False)]
+    
+    #Change play type description to match pass and rush columns
+    #QB Scrambles labeled as pass
+    data.play_type.loc[data['pass']==1] = 'pass'
+    data.play_type.loc[data.rush==1] = 'run'
+    
+    #Output cleaned, compressed CSV to current directory
+    data.to_csv('pbp_' + str(i) + '.csv.gz', index=False, compression='gzip')
+    
+    print(str(i) + ' data complete.')
