@@ -17,14 +17,7 @@ def create_db():
             No return value
     """
 
-    #Years of data to include
-    YEARS = [1999, 2000, 2001, 2002, 2003,
-             2004, 2005, 2006, 2007, 2008,
-             2009, 2010, 2011, 2012, 2013,
-             2014, 2015, 2016, 2017, 2018,
-             2019]
-
-    for i in YEARS:
+    for i in range(1999,2020):
         link = 'https://github.com/guga31bb/nflfastR-data/blob/master/data/play_by_play_' + \
             str(i) + '.csv.gz?raw=true'
 
